@@ -25,6 +25,7 @@ static void	handler(int sig)
 		ft_printf("%c", c);
 		bit = 0;
 		c = 0;
+		ft_printf("%i", getppid());
 	}
 }
 
@@ -33,9 +34,10 @@ int	main(int argc, char **argv)
 	(void)argv;
 	if (argc != 1)
 	{
-		ft_printf("Usage: ./server\n");
+		ft_printf("Usage: ./server_bonus\n");
 		return (1);
 	}
+	ft_printf("BONUS\n");
 	ft_printf("PID : %d\n", getpid());
 	if (signal(SIGUSR1, handler) == SIG_ERR
 		|| signal(SIGUSR2, handler) == SIG_ERR)

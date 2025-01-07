@@ -23,9 +23,15 @@ static void	send_char(int pid, char c)
 			kill(pid, SIGUSR1);
 		else
 			kill(pid, SIGUSR2);
-		usleep(1000);
+		usleep(500);
 		bit++;
 	}
+}
+
+void	confirmation(int sig)
+{
+	(void)sig;
+	ft_printf("OK");
 }
 
 void	send_message(int pid, char *message)
@@ -33,16 +39,20 @@ void	send_message(int pid, char *message)
 	while (*message)
 	{
 		send_char(pid, *message);
+		signal(SIGUSR1, confirmation);
+		pause();
 		message++;
 	}
 	send_char(pid, '\0');
+	signal(SIGUSR1, confirmation);
+	pause();
 }
 
 int	main(int argc, char **argv)
 {
 	if (argc != 3)
 	{
-		ft_printf("Usage: ./client [server_pid] [message]\n");
+		ft_printf("Usage: ./client_bonus [server_pid] [message]\n");
 		return (1);
 	}
 	send_message(ft_atoi(argv[1]), argv[2]);
