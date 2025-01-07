@@ -12,20 +12,19 @@
 
 #include "../../includes/minitalk.h"
 
-static void	handler(int sig)
+static void handler(int sig)
 {
-	static int	bit;
-	static char	c;
+	static int bit = 0;
+	static char c = 0;
 
-	bit = 0;
-	c = 0;
-	ft_printf("receive %d", sig);
 	if (sig == SIGUSR1)
 		c |= (1 << (7 - bit));
-	
-	if (++bit == 8)
+	else if (sig == SIGUSR2)
+		c &= ~(1 << (7 - bit));
+	bit++;
+	if (bit == 8)
 	{
-		ft_putchar_fd(c, 1);
+		write(1, &c, 1);
 		bit = 0;
 		c = 0;
 	}
@@ -34,20 +33,16 @@ static void	handler(int sig)
 int	main(int argc, char **argv)
 {
 	(void)argv;
+
 	if (argc != 1)
 	{
 		ft_printf("Usage: ./server\n");
 		return (1);
 	}
 	ft_printf("PID : %d\n", getpid());
-	if (signal(SIGUSR1, handler) == SIG_ERR)
+	if (signal(SIGUSR1, handler) == SIG_ERR || signal(SIGUSR2, handler) == SIG_ERR)
 	{
-		ft_printf("Error registering SIGUSR1 signal\n");
-		return (1);
-	}
-	if (signal(SIGUSR2, handler) == SIG_ERR)
-	{
-		ft_printf("Error registering SIGUSR2 signal\n");
+		ft_printf("Error registering signals\n");
 		return (1);
 	}
 	while (1)

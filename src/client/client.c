@@ -14,9 +14,8 @@
 
 static void	send_char(int pid, char c)
 {
-	int	bit;
+	int	bit = 0;
 
-	bit = 0;
 	while (bit < 8)
 	{
 		if ((c & 128) == 0)
@@ -25,23 +24,27 @@ static void	send_char(int pid, char c)
 			kill(pid, SIGUSR1);
 		c <<= 1;
 		bit++;
-		usleep(100);
+		usleep(1000);
 	}
+}
+
+void	send_message(int pid, char *message)
+{
+	while (*message)
+	{
+		send_char(pid, *message);
+		message++;
+	}
+	send_char(pid, '\0');
 }
 
 int	main(int argc, char **argv)
 {
-	int		pid;
-	char	*message;
-
 	if (argc != 3)
 	{
 		ft_printf("Usage: ./client [server_pid] [message]\n");
 		return (1);
 	}
-	pid = ft_atoi(argv[1]);
-	message = argv[2];
-	while (*message)
-		send_char(pid, *message++);
+	send_message(ft_atoi(argv[1]), argv[2]);
 	return (0);
 }

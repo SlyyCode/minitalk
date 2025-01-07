@@ -15,11 +15,13 @@
 int	ft_putnbr_fd(int n, int fd)
 {
 	char	*str;
+	int		len;
 
 	str = ft_itoa(n);
+	len = ft_strlen(str);
 	ft_putstr_fd(str, fd);
 	free(str);
-	return (ft_strlen(str));
+	return (len);
 }
 /*
 int main(void)
